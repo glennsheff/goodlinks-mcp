@@ -13,6 +13,7 @@
     "url": "https://github.com/glennsheff/goodlinks-mcp"
   },
   "homepage": "https://github.com/glennsheff/goodlinks-mcp",
+  "icon": "icon.png",
   "server": {
     "type": "uv",
     "entry_point": "src/goodlinks_mcp/server.py",

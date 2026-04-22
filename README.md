@@ -21,16 +21,16 @@ All tools are read-only and talk to the GoodLinks local API on `localhost:9428`.
 
 ## Install — Claude Desktop (recommended)
 
-This repo builds to a single `.mcpb` bundle that Claude Desktop installs in one click. No JSON editing.
+This repo ships as a single `.mcpb` bundle that Claude Desktop installs in one click. No JSON editing.
 
 1. **Enable the GoodLinks API.** GoodLinks → Settings → API. Toggle it on and copy the token.
-2. **Grab a `.mcpb`**:
-   - Download the latest from [Releases](https://github.com/glennsheff/goodlinks-mcp/releases), **or**
-   - Build it yourself: `npx @anthropic-ai/mcpb pack` (produces `goodlinks-mcp-0.1.0.mcpb`).
-3. **Install.** Double-click the `.mcpb`, or drag it onto Claude Desktop. The app prompts for the **GoodLinks API Token** in a proper form field (the token is stored in the OS keychain, not a plaintext config file).
-4. **Done.** The `goodlinks_*` tools show up next time you start a chat.
+2. **Download the latest `.mcpb`** from [Releases](https://github.com/glennsheff/goodlinks-mcp/releases) (or [build your own](#building-from-source)).
+3. **Install.** Double-click the `.mcpb` or drag it onto Claude Desktop. The install dialog prompts for your **GoodLinks API Token** — it's stored in the macOS keychain, not a plaintext config file.
+4. **Done.** The `goodlinks_*` tools appear in your next chat.
 
-To update: drop a newer `.mcpb` onto Claude Desktop. To remove: Settings → Extensions → uninstall.
+- **Update**: drop a newer `.mcpb` onto Claude Desktop.
+- **Rotate token**: Claude Desktop → Settings → Extensions → GoodLinks → Configure. No reinstall needed.
+- **Remove**: Settings → Extensions → GoodLinks → Uninstall.
 
 ## Install — Claude Code
 
@@ -61,12 +61,22 @@ GOODLINKS_API_TOKEN=your-token uv run goodlinks-mcp
 
 The server speaks MCP over stdio and will sit waiting for a client.
 
+## Building from source
+
+Requires Node (for `npx`) and the repo cloned locally.
+
+```sh
+npx @anthropic-ai/mcpb pack
+```
+
+This produces a `.mcpb` file in the repo root (named after the parent folder). Install it the same way as a release download.
+
 ## Notes
 
 - GoodLinks must be running for tools to work. You'll get a friendly error if it isn't.
-- If you rotate the API token, reinstall the `.mcpb` (or restart the host app after updating the env) so the new value is picked up.
 - Search results default to 20 per call. Use `offset` to paginate; check `hasMore` to know when to stop.
 - For long articles, pass `max_chars` to `goodlinks_get_link_content` to cap the response.
+- The app icon in the install dialog is GoodLinks' own icon, pulled from `/Applications/GoodLinks.app`.
 
 ## Roadmap
 
