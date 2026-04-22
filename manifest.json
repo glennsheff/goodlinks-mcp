@@ -1,0 +1,67 @@
+{
+  "manifest_version": "0.4",
+  "name": "goodlinks-mcp",
+  "display_name": "GoodLinks",
+  "version": "0.1.0",
+  "description": "Read-only MCP server for the GoodLinks read-it-later app.",
+  "long_description": "Gives Claude access to your saved articles, tags, and highlights from GoodLinks for research and reference. All tools are read-only and talk to the GoodLinks local API on your Mac. Requires GoodLinks 3.2+ with the API enabled in Settings → API.",
+  "author": {
+    "name": "Glenn Faulkner"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/glennsheff/goodlinks-mcp"
+  },
+  "homepage": "https://github.com/glennsheff/goodlinks-mcp",
+  "server": {
+    "type": "uv",
+    "entry_point": "src/goodlinks_mcp/server.py",
+    "mcp_config": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory", "${__dirname}",
+        "goodlinks-mcp"
+      ],
+      "env": {
+        "GOODLINKS_API_TOKEN": "${user_config.api_token}",
+        "GOODLINKS_API_BASE_URL": "${user_config.api_base_url}"
+      }
+    }
+  },
+  "tools": [
+    { "name": "goodlinks_search_links", "description": "Search GoodLinks with filters (tags, starred, read, word count, dates)." },
+    { "name": "goodlinks_get_list", "description": "Fetch a built-in list: unread, read, starred, untagged, highlighted, all." },
+    { "name": "goodlinks_get_link", "description": "Fetch a single link by id or URL." },
+    { "name": "goodlinks_get_current_link", "description": "Fetch the link currently selected in GoodLinks." },
+    { "name": "goodlinks_get_link_content", "description": "Fetch article body as markdown, plaintext, or html." },
+    { "name": "goodlinks_list_tags", "description": "List every tag in your library." },
+    { "name": "goodlinks_search_highlights", "description": "Search saved highlights across the library." },
+    { "name": "goodlinks_export_link_highlights", "description": "Export a link's highlights as Markdown." }
+  ],
+  "keywords": ["goodlinks", "read-it-later", "bookmarks", "highlights", "reading"],
+  "license": "MIT",
+  "user_config": {
+    "api_token": {
+      "type": "string",
+      "title": "GoodLinks API Token",
+      "description": "Bearer token from GoodLinks → Settings → API.",
+      "sensitive": true,
+      "required": true
+    },
+    "api_base_url": {
+      "type": "string",
+      "title": "API Base URL",
+      "description": "Override only if GoodLinks is running on a non-default port.",
+      "default": "http://localhost:9428/api/v1",
+      "required": false
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": ["darwin"],
+    "runtimes": {
+      "python": ">=3.10"
+    }
+  }
+}
