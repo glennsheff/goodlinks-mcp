@@ -48,6 +48,7 @@ class GoodLinksClient:
         path: str,
         *,
         params: dict[str, Any] | None = None,
+        json_body: dict[str, Any] | None = None,
         expect_json: bool = True,
     ) -> Any:
         url = f"{self._base_url}{path}"
@@ -57,6 +58,7 @@ class GoodLinksClient:
                     method,
                     url,
                     params=_clean_params(params),
+                    json=json_body,
                     headers=self._headers(),
                 )
         except httpx.ConnectError as exc:
@@ -105,6 +107,10 @@ class GoodLinksClient:
 
     async def search_links(self, params: dict[str, Any]) -> dict[str, Any]:
         return await self._request("GET", "/links", params=params)
+
+    async def save_link(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """POST /links — create or upsert by URL."""
+        return await self._request("POST", "/links", json_body=payload)
 
     async def get_list(self, list_name: str, params: dict[str, Any]) -> dict[str, Any]:
         return await self._request("GET", f"/lists/{list_name}", params=params)

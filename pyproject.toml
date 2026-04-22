@@ -1,7 +1,7 @@
 [project]
 name = "goodlinks-mcp"
-version = "0.1.0"
-description = "Read-only MCP server for the GoodLinks read-it-later app"
+version = "0.2.0"
+description = "MCP server for the GoodLinks read-it-later app"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [

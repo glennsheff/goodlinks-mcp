@@ -409,6 +409,87 @@ async def goodlinks_export_link_highlights(
         raise RuntimeError(str(exc)) from exc
 
 
+@mcp.tool(
+    annotations={
+        "readOnlyHint": False,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False,
+        "title": "Save a link to GoodLinks",
+    }
+)
+async def goodlinks_save_link(
+    url: Annotated[
+        str,
+        Field(
+            description="HTTP/HTTPS URL to save. Max 2000 chars.",
+            max_length=2000,
+        ),
+    ],
+    title: Annotated[
+        str | None,
+        Field(
+            default=None,
+            max_length=200,
+            description="Optional title. Max 200 chars. Newlines are converted to spaces.",
+        ),
+    ] = None,
+    summary: Annotated[
+        str | None,
+        Field(
+            default=None,
+            max_length=400,
+            description="Optional summary. Max 400 chars. Newlines are converted to spaces.",
+        ),
+    ] = None,
+    tags: Annotated[
+        list[str] | None,
+        Field(
+            default=None,
+            description="Optional tags. Each tag max 100 chars. Passing an empty list clears tags.",
+        ),
+    ] = None,
+    starred: Annotated[
+        bool | None,
+        Field(default=None, description="Mark as starred. Defaults to false for new links."),
+    ] = None,
+    read: Annotated[
+        bool | None,
+        Field(default=None, description="Mark as read. Defaults to false for new links."),
+    ] = None,
+    added_at: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="ISO-8601 timestamp for when the link was added. Defaults to now; future times are clamped.",
+        ),
+    ] = None,
+) -> dict[str, Any]:
+    """Save a link to GoodLinks, or update an existing link if one with the same URL already exists.
+
+    This is upsert-by-URL: posting the same URL twice updates the existing
+    link rather than creating a duplicate. Returns the complete link object
+    including `id`, `addedAt`, `modifiedAt`, and all other metadata.
+    """
+    payload: dict[str, Any] = {"url": url}
+    if title is not None:
+        payload["title"] = title
+    if summary is not None:
+        payload["summary"] = summary
+    if tags is not None:
+        payload["tags"] = tags
+    if starred is not None:
+        payload["starred"] = starred
+    if read is not None:
+        payload["read"] = read
+    if added_at is not None:
+        payload["addedAt"] = added_at
+    try:
+        return await _get_client().save_link(payload)
+    except GoodLinksError as exc:
+        raise RuntimeError(str(exc)) from exc
+
+
 # --- Helpers -------------------------------------------------------------
 
 
